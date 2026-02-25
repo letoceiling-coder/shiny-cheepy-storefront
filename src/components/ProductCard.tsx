@@ -31,7 +31,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <div
-      className="group relative bg-card rounded-xl overflow-hidden transition-all duration-200"
+      className="group relative bg-card rounded-xl overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => { setIsHovered(false); setActiveImage(0); }}
     >
@@ -87,8 +87,8 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
       </div>
 
-      {/* Info */}
-      <div className="p-3">
+      {/* Info - fixed height area */}
+      <div className="p-3 h-[140px] relative">
         <div className="flex items-baseline gap-2 mb-1">
           <span className="text-lg font-bold text-foreground">{product.price.toLocaleString()} ₽</span>
           {product.oldPrice && (
@@ -104,8 +104,8 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
         <p className="text-xs text-muted-foreground mt-1">{product.seller}</p>
 
-        {/* Extra info on hover */}
-        <div className={`transition-all duration-200 overflow-hidden ${isHovered ? "max-h-10 opacity-100 mt-2" : "max-h-0 opacity-0"}`}>
+        {/* Cart button overlaid at bottom of info area on hover */}
+        <div className={`absolute bottom-3 left-3 right-3 transition-all duration-200 ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1 pointer-events-none"}`}>
           <button className="w-full gradient-primary text-primary-foreground text-xs py-1.5 rounded-full font-medium">
             В корзину
           </button>

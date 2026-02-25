@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import look1 from "@/assets/look-1.jpg";
 import product1 from "@/assets/product-1.jpg";
@@ -6,13 +7,14 @@ import product5 from "@/assets/product-5.jpg";
 import product4 from "@/assets/product-4.jpg";
 
 const lookItems = [
-  { name: "Пиджак тёмно-синий", price: 8990, image: product2 },
-  { name: "Футболка чёрная", price: 1490, image: product1 },
-  { name: "Джинсы голубые", price: 4990, image: product5 },
-  { name: "Ботинки чёрные", price: 7990, image: product4 },
+  { name: "Пиджак тёмно-синий", price: 8990, image: product2, lookImage: look1 },
+  { name: "Футболка чёрная", price: 1490, image: product1, lookImage: product1 },
+  { name: "Джинсы голубые", price: 4990, image: product5, lookImage: product5 },
+  { name: "Ботинки чёрные", price: 7990, image: product4, lookImage: product4 },
 ];
 
 const LookOfTheDay = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
   const totalPrice = lookItems.reduce((sum, item) => sum + item.price, 0);
 
   return (
@@ -21,7 +23,16 @@ const LookOfTheDay = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Main look image */}
         <div className="relative rounded-2xl overflow-hidden h-[400px] lg:h-[500px]">
-          <img src={look1} alt="Look of the day" className="w-full h-full object-cover" />
+          {lookItems.map((item, i) => (
+            <img
+              key={i}
+              src={item.lookImage}
+              alt="Look of the day"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                i === activeIndex ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-foreground/70 to-transparent p-6">
             <p className="text-primary-foreground text-lg font-bold">Smart Casual</p>
             <p className="text-primary-foreground/80 text-sm">Идеальный образ на каждый день</p>
@@ -32,7 +43,15 @@ const LookOfTheDay = () => {
         <div className="flex flex-col justify-between">
           <div className="space-y-3">
             {lookItems.map((item, i) => (
-              <div key={i} className="flex items-center gap-4 p-3 bg-secondary rounded-xl hover:bg-secondary/80 transition-colors cursor-pointer">
+              <div
+                key={i}
+                onClick={() => setActiveIndex(i)}
+                className={`flex items-center gap-4 p-3 rounded-xl cursor-pointer transition-colors ${
+                  i === activeIndex
+                    ? "bg-primary/10 ring-1 ring-primary/30"
+                    : "bg-secondary hover:bg-secondary/80"
+                }`}
+              >
                 <img src={item.image} alt={item.name} className="w-16 h-16 rounded-lg object-cover" />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground">{item.name}</p>
