@@ -1,12 +1,32 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Header from "@/components/Header";
+import HeroSlider from "@/components/HeroSlider";
+import ProductGrid from "@/components/ProductGrid";
+import CategoryBanners from "@/components/CategoryBanners";
+import LookOfTheDay from "@/components/LookOfTheDay";
+import Footer from "@/components/Footer";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Header />
+
+      <main className="max-w-[1400px] mx-auto px-4 pb-20 md:pb-0">
+        <HeroSlider />
+
+        <ProductGrid title="Успейте купить" subtitle="Горящие предложения" initialCount={6} />
+
+        <CategoryBanners />
+
+        <ProductGrid title='Рекомендуем в категории "Мужская одежда"' initialCount={6} />
+
+        <LookOfTheDay />
+
+        <ProductGrid title="Популярное сейчас" initialCount={12} />
+      </main>
+
+      <Footer />
+      <MobileBottomNav />
     </div>
   );
 };
