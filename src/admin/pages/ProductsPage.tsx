@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trash2, Eye, RefreshCw, Sparkles, Search } from "lucide-react";
+import { Trash2, Eye, RefreshCw, Sparkles, Search, ExternalLink } from "lucide-react";
 import { mockProducts } from "../mock-data";
 import type { Product } from "../types";
 
@@ -96,7 +97,12 @@ export default function ProductsPage() {
                     <TableCell>{statusBadge(p.status)}</TableCell>
                     <TableCell>{aiBadge(p.aiStatus)}</TableCell>
                     <TableCell className="text-muted-foreground text-xs">{new Date(p.updatedAt).toLocaleDateString('ru')}</TableCell>
-                    <TableCell><Button variant="ghost" size="icon"><RefreshCw className="h-4 w-4" /></Button></TableCell>
+                    <TableCell>
+                      <div className="flex gap-1">
+                        <Link to={`/admin/products/${p.id}`}><Button variant="ghost" size="icon"><ExternalLink className="h-4 w-4" /></Button></Link>
+                        <Button variant="ghost" size="icon"><RefreshCw className="h-4 w-4" /></Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
