@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, ShoppingCart, BarChart2 } from "lucide-react";
 
 interface Product {
@@ -12,7 +13,8 @@ interface Product {
   seller: string;
 }
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product, variant = "grid" }: { product: Product; variant?: "grid" | "list" }) => {
+  const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -28,6 +30,68 @@ const ProductCard = ({ product }: { product: Product }) => {
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
+
+  if (variant === "list") {
+    return (
+      <div
+        className="group flex w-full bg-card rounded-xl border border-border overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => { setIsHovered(false); setActiveImage(0); }}
+      >
+        <a href={`/product/${product.id}`} className="shrink-0 w-24 sm:w-28 aspect-square relative overflow-hidden bg-secondary">
+          {product.images.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt={product.name}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-200 ${
+                i === activeImage ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
+          {discount > 0 && (
+            <span className="absolute top-1 left-1 gradient-hero text-primary-foreground text-xs font-semibold px-1.5 py-0.5 rounded">
+              -{discount}%
+            </span>
+          )}
+        </a>
+        <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-2 p-3 sm:p-4">
+          <div className="flex-1 min-w-0">
+            <a href={`/product/${product.id}`} className="block">
+              <p className="text-sm font-medium text-foreground line-clamp-2 hover:text-primary transition-colors">{product.name}</p>
+            </a>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="text-base font-bold text-foreground">{product.price.toLocaleString()} ₽</span>
+              {product.oldPrice && (
+                <span className="text-xs text-muted-foreground line-through">{product.oldPrice.toLocaleString()} ₽</span>
+              )}
+            </div>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+              <span className="text-yellow-500">★</span>
+              <span>{product.rating}</span>
+              <span>·</span>
+              <span>{product.reviews} отзывов</span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">{product.seller}</p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={(e) => { e.preventDefault(); setIsFavorite(!isFavorite); }}
+              className={`p-2 rounded-full border border-border transition-colors ${isFavorite ? "bg-primary/10 text-primary border-primary/30" : "bg-secondary text-muted-foreground hover:text-primary"}`}
+            >
+              <Heart className={`w-4 h-4 ${isFavorite ? "fill-primary" : ""}`} />
+            </button>
+            <a
+              href={`/product/${product.id}`}
+              className="gradient-primary text-primary-foreground text-sm font-medium px-4 py-2 rounded-full hover:opacity-90 transition-opacity whitespace-nowrap"
+            >
+              В корзину
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -87,8 +151,8 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
       </div>
 
-      {/* Info - fixed height area */}
-      <div className="p-3 h-[140px] relative">
+      {/* Info - button in flow so it doesn't overlay content and stays clickable */}
+      <div className="p-3 flex flex-col">
         <div className="flex items-baseline gap-2 mb-1">
           <span className="text-lg font-bold text-foreground">{product.price.toLocaleString()} ₽</span>
           {product.oldPrice && (
@@ -103,10 +167,12 @@ const ProductCard = ({ product }: { product: Product }) => {
           <span>{product.reviews} отзывов</span>
         </div>
         <p className="text-xs text-muted-foreground mt-1">{product.seller}</p>
-
-        {/* Cart button overlaid at bottom of info area on hover */}
-        <div className={`absolute bottom-3 left-3 right-3 transition-all duration-200 ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1 pointer-events-none"}`}>
-          <button className="w-full gradient-primary text-primary-foreground text-xs py-1.5 rounded-full font-medium">
+        <div className="mt-3 min-h-[32px] flex items-center">
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate(`/product/${product.id}`); }}
+            className={`w-full gradient-primary text-primary-foreground text-xs py-1.5 rounded-full font-medium transition-opacity duration-200 hover:opacity-90 ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          >
             В корзину
           </button>
         </div>

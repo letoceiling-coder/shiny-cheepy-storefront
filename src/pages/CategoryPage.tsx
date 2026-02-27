@@ -218,12 +218,16 @@ const CategoryPage = () => {
               </div>
             </div>
 
-            {/* Grid */}
-            <div className={viewMode === "grid" ? "grid grid-cols-2 md:grid-cols-3 gap-4" : "space-y-4"}>
+            {/* Grid / List */}
+            <div className={viewMode === "grid" ? "grid grid-cols-2 md:grid-cols-3 gap-4" : "flex flex-col gap-3"}>
               {pageProducts.map(p => (
-                <a key={p.id} href={`/product/${p.id}`} className="block">
-                  <ProductCard product={p} />
-                </a>
+                viewMode === "list" ? (
+                  <ProductCard key={p.id} product={p} variant="list" />
+                ) : (
+                  <a key={p.id} href={`/product/${p.id}`} className="block">
+                    <ProductCard product={p} />
+                  </a>
+                )
               ))}
             </div>
 

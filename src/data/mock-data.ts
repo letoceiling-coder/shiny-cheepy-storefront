@@ -85,7 +85,7 @@ export const mockProducts: Product[] = Array.from({ length: 24 }, (_, i) => ({
   ][i % 12],
   price: [4990, 8990, 12990, 3490, 5990, 2990, 15990, 4290, 1290, 9990, 3790, 1990][i % 12],
   oldPrice: i % 3 === 0 ? [6990, 12990, 17990, 4990, 8990, 4290, 21990, 5990, 1990, 13990, 5290, 2990][i % 12] : undefined,
-  images: [images[i % 6], images[(i + 1) % 6], images[(i + 2) % 6]],
+  images: [images[i % 6], images[(i + 1) % 6], images[(i + 2) % 6], images[(i + 3) % 6], images[(i + 4) % 6], images[(i + 5) % 6]],
   rating: +(3.5 + Math.random() * 1.5).toFixed(1),
   reviews: 10 + Math.floor(Math.random() * 500),
   seller: ["Fashion Hub", "SportStyle", "Glamour Shop", "UrbanBag", "DenimPro", "ComfortWear"][i % 6],

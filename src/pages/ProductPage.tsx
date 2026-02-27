@@ -51,16 +51,18 @@ const ProductPage = () => {
         </div>
 
         {/* Product top section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 mb-10">
-          {/* Gallery */}
-          <div>
-            <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-secondary mb-3">
-              <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 md:items-start">
+          {/* Gallery: thumbnails left, main photo right on desktop */}
+          <div className="flex flex-col md:flex-row-reverse md:items-start md:gap-3">
+            {/* Main photo */}
+            <div className="aspect-[3/4] max-h-[500px] rounded-2xl overflow-hidden bg-secondary mb-3 md:mb-0 md:flex-1 md:min-w-0">
+              <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-contain" />
             </div>
-            <div className="flex gap-2">
+            {/* Thumbnails — horizontal on mobile, vertical with scroll on desktop */}
+            <div className="flex gap-2 overflow-x-auto no-scrollbar md:flex-col md:overflow-x-hidden md:overflow-y-auto md:max-h-[500px] md:shrink-0 md:w-[68px] md:gap-2">
               {product.images.map((img, i) => (
                 <button key={i} onClick={() => setActiveImage(i)}
-                  className={`w-16 h-20 rounded-lg overflow-hidden border-2 transition-colors ${i === activeImage ? "border-primary" : "border-transparent"}`}>
+                  className={`shrink-0 w-16 h-20 rounded-lg overflow-hidden border-2 transition-colors ${i === activeImage ? "border-primary" : "border-transparent hover:border-border"}`}>
                   <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
