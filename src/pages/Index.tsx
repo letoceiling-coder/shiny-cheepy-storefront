@@ -14,6 +14,15 @@ import SpecialOffers from "@/components/sections/SpecialOffers";
 import Bestsellers from "@/components/sections/Bestsellers";
 import TrendingProducts from "@/components/sections/TrendingProducts";
 import CustomerReviews from "@/components/sections/CustomerReviews";
+import TopRatedSellers from "@/components/sections/TopRatedSellers";
+import VerifiedSellersRow from "@/components/sections/VerifiedSellersRow";
+import NewSellersBlock from "@/components/sections/NewSellersBlock";
+import PopularSellersRow from "@/components/sections/PopularSellersRow";
+import HowToOrder from "@/components/sections/HowToOrder";
+import TrustBadges from "@/components/sections/TrustBadges";
+import Newsletter from "@/components/sections/Newsletter";
+import FAQ from "@/components/sections/FAQ";
+import CTABlocks from "@/components/sections/CTABlocks";
 
 const Index = () => {
   return(
@@ -54,10 +63,28 @@ const Index = () => {
 
           <SellersSection />
 
+          <TopRatedSellers />
+
+          <VerifiedSellersRow />
+
+          <NewSellersBlock />
+
+          <PopularSellersRow />
+
+          <HowToOrder />
+
           <InformBlock />
 
           <MapSection />
+
+          <Newsletter />
+
+          <FAQ />
+
+          <CTABlocks />
         </div>
+
+        <TrustBadges />
       </main>
 
       <Footer />

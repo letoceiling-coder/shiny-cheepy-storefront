@@ -2,15 +2,20 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
+import ScrollToTop from "@/components/ScrollToTop";
+import PageTransition from "@/components/PageTransition";
+import { AnimatePresence } from "framer-motion";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/AuthPage";
 import BrandPage from "./pages/BrandPage";
+import BrandsListPage from "./pages/BrandsListPage";
 import SellerPage from "./pages/SellerPage";
+import SellersListPage from "./pages/SellersListPage";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
 import FavoritesPage from "./pages/FavoritesPage";
@@ -41,6 +46,59 @@ import SettingsPage from "./admin/pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+        <Route path="/auth" element={<PageTransition><AuthPage /></PageTransition>} />
+        <Route path="/category/:slug" element={<PageTransition><CategoryPage /></PageTransition>} />
+        <Route path="/product/:id" element={<PageTransition><ProductPage /></PageTransition>} />
+        <Route path="/favorites" element={<PageTransition><FavoritesPage /></PageTransition>} />
+        <Route path="/cart" element={<PageTransition><CartPage /></PageTransition>} />
+        <Route path="/brand" element={<PageTransition><BrandsListPage /></PageTransition>} />
+        <Route path="/brand/:slug" element={<PageTransition><BrandPage /></PageTransition>} />
+        <Route path="/seller" element={<PageTransition><SellersListPage /></PageTransition>} />
+        <Route path="/seller/:id" element={<PageTransition><SellerPage /></PageTransition>} />
+
+        {/* Account routes */}
+        <Route path="/account" element={<PageTransition><AccountLayout /></PageTransition>}>
+          <Route index element={<PersonalDataPage />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="payment" element={<PaymentMethodsPage />} />
+          <Route path="balance" element={<BalancePage />} />
+          <Route path="favorites" element={<FavoritesPage />} />
+          <Route path="coupons" element={<CouponsPage />} />
+          <Route path="receipts" element={<ReceiptsPage />} />
+          <Route path="referral" element={<ReferralPage />} />
+          <Route path="password" element={<ChangePasswordPage />} />
+        </Route>
+
+        {/* Admin routes */}
+        <Route path="/admin" element={<PageTransition><AdminLayout /></PageTransition>}>
+          <Route index element={<DashboardPage />} />
+          <Route path="parser" element={<ParserPage />} />
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="products/:id" element={<ProductDetailPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
+          <Route path="brands" element={<BrandsPage />} />
+          <Route path="filters" element={<FiltersPage />} />
+          <Route path="ai" element={<AiPage />} />
+          <Route path="scheduler" element={<SchedulerPage />} />
+          <Route path="excluded" element={<ExcludedPage />} />
+          <Route path="logs" element={<LogsPage />} />
+          <Route path="roles" element={<RolesPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
+
+        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -50,48 +108,8 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/category/:slug" element={<CategoryPage />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="/favorites" element={<FavoritesPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/brand/:slug" element={<BrandPage />} />
-                <Route path="/seller/:id" element={<SellerPage />} />
-
-                {/* Account routes */}
-                <Route path="/account" element={<AccountLayout />}>
-                  <Route index element={<PersonalDataPage />} />
-                  <Route path="orders" element={<OrdersPage />} />
-                  <Route path="payment" element={<PaymentMethodsPage />} />
-                  <Route path="balance" element={<BalancePage />} />
-                  <Route path="favorites" element={<FavoritesPage />} />
-                  <Route path="coupons" element={<CouponsPage />} />
-                  <Route path="receipts" element={<ReceiptsPage />} />
-                  <Route path="referral" element={<ReferralPage />} />
-                  <Route path="password" element={<ChangePasswordPage />} />
-                </Route>
-
-                {/* Admin routes */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<DashboardPage />} />
-                  <Route path="parser" element={<ParserPage />} />
-                  <Route path="products" element={<ProductsPage />} />
-                  <Route path="products/:id" element={<ProductDetailPage />} />
-                  <Route path="categories" element={<CategoriesPage />} />
-                  <Route path="brands" element={<BrandsPage />} />
-                  <Route path="filters" element={<FiltersPage />} />
-                  <Route path="ai" element={<AiPage />} />
-                  <Route path="scheduler" element={<SchedulerPage />} />
-                  <Route path="excluded" element={<ExcludedPage />} />
-                  <Route path="logs" element={<LogsPage />} />
-                  <Route path="roles" element={<RolesPage />} />
-                  <Route path="settings" element={<SettingsPage />} />
-                </Route>
-
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <ScrollToTop />
+              <AnimatedRoutes />
             </BrowserRouter>
           </TooltipProvider>
         </FavoritesProvider>
