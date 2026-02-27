@@ -9,6 +9,8 @@ import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/AuthPage";
+import BrandPage from "./pages/BrandPage";
+import SellerPage from "./pages/SellerPage";
 import CategoryPage from "./pages/CategoryPage";
 import ProductPage from "./pages/ProductPage";
 import FavoritesPage from "./pages/FavoritesPage";
@@ -55,6 +57,8 @@ const App = () => (
                 <Route path="/product/:id" element={<ProductPage />} />
                 <Route path="/favorites" element={<FavoritesPage />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/brand/:slug" element={<BrandPage />} />
+                <Route path="/seller/:id" element={<SellerPage />} />
 
                 {/* Account routes */}
                 <Route path="/account" element={<AccountLayout />}>

@@ -8,6 +8,12 @@ import SellersSection from "@/components/SellersSection";
 import MapSection from "@/components/MapSection";
 import Footer from "@/components/Footer";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import PopularCategories from "@/components/sections/PopularCategories";
+import HotDeals from "@/components/sections/HotDeals";
+import SpecialOffers from "@/components/sections/SpecialOffers";
+import Bestsellers from "@/components/sections/Bestsellers";
+import TrendingProducts from "@/components/sections/TrendingProducts";
+import CustomerReviews from "@/components/sections/CustomerReviews";
 
 const Index = () => {
   return(
@@ -18,17 +24,23 @@ const Index = () => {
         <div className="max-w-[1400px] mx-auto px-4">
           <HeroSlider />
 
+          <PopularCategories />
+
+          <HotDeals />
+
           <ProductGrid title="ГОРЯЧИЕ ПРЕДЛОЖЕНИЯ" initialCount={6} />
+
+          <SpecialOffers />
 
           <ProductGrid title="ПОПУЛЯРНОЕ В КАТЕГОРИИ" initialCount={6} />
 
           <CategoryBanners />
 
-          <ProductGrid title="ПОПУЛЯРНОЕ В КАТЕГОРИИ" initialCount={6} />
+          <Bestsellers />
 
           <ProductGrid title="НОВОЕ ПОСТУПЛЕНИЕ" initialCount={12} />
 
-          <ProductGrid title="ТРЕНДОВЫЕ ТОВАРЫ" initialCount={12} />
+          <TrendingProducts />
         </div>
 
         <section className="w-full">
@@ -38,6 +50,8 @@ const Index = () => {
         </section>
 
         <div className="max-w-[1400px] mx-auto px-4">
+          <CustomerReviews />
+
           <SellersSection />
 
           <InformBlock />
