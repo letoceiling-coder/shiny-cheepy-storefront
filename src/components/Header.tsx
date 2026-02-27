@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, User, Heart, ShoppingCart, Grid2X2, ChevronDown, Send, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import MegaMenu from "./MegaMenu";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 const YoutubeIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
@@ -22,6 +26,10 @@ const Header = () => {
   const [showCity, setShowCity] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { totalItems } = useCart();
+  const { count: favCount } = useFavorites();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +56,15 @@ const Header = () => {
   const [selectedCurrency, setSelectedCurrency] = useState("RUB");
   const [selectedCity, setSelectedCity] = useState("Москва");
 
-  const navLinks = ["Мужское", "Женское", "Обувь и одежда", "Избранное", "Доставка", "Правила площадки", "Поддержка"];
+  const navLinks = [
+    { label: "Мужское", to: "/category/мужское" },
+    { label: "Женское", to: "/category/женское" },
+    { label: "Обувь и одежда", to: "/category/обувь" },
+    { label: "Избранное", to: "/favorites" },
+    { label: "Доставка", to: "#" },
+    { label: "Правила площадки", to: "#" },
+    { label: "Поддержка", to: "#" },
+  ];
 
   return (
     <>
@@ -125,7 +141,7 @@ const Header = () => {
         <div className={`max-w-[1400px] mx-auto px-4 transition-all duration-300 ${isCompact ? "py-1.5" : "py-3"}`}>
           <div className="flex items-center gap-4">
             {/* Logo */}
-            <a href="/" className="text-2xl font-extrabold text-foreground shrink-0">Cheepy</a>
+            <Link to="/" className="text-2xl font-extrabold text-foreground shrink-0">Cheepy</Link>
 
             {/* Categories button */}
             <button
@@ -148,7 +164,7 @@ const Header = () => {
               </button>
             </div>
 
-            {/* Search - mobile: icon or expanded field */}
+            {/* Search - mobile */}
             <div className="md:hidden flex-1 flex items-center justify-end">
               {mobileSearchOpen ? (
                 <div className="flex-1 flex items-center gap-2 animate-fade-in">
@@ -176,18 +192,20 @@ const Header = () => {
 
             {/* Icons */}
             <div className="hidden md:flex items-center gap-5 shrink-0">
-              <button className="flex flex-col items-center gap-0.5 text-foreground hover:text-primary transition-colors">
+              <button onClick={() => navigate(isAuthenticated ? "/account" : "/auth")} className="flex flex-col items-center gap-0.5 text-foreground hover:text-primary transition-colors">
                 <User className="w-5 h-5" />
-                <span className="text-xs">Войти</span>
+                <span className="text-xs">{isAuthenticated ? "Кабинет" : "Войти"}</span>
               </button>
-              <button className="flex flex-col items-center gap-0.5 text-primary hover:opacity-80 transition-opacity">
+              <Link to="/favorites" className="flex flex-col items-center gap-0.5 text-primary hover:opacity-80 transition-opacity relative">
                 <Heart className="w-5 h-5" />
                 <span className="text-xs">Избранное</span>
-              </button>
-              <button className="flex flex-col items-center gap-0.5 text-foreground hover:text-primary transition-colors">
+                {favCount > 0 && <span className="absolute -top-1 -right-2 w-4 h-4 rounded-full gradient-hero text-primary-foreground text-[10px] font-bold flex items-center justify-center">{favCount}</span>}
+              </Link>
+              <Link to="/cart" className="flex flex-col items-center gap-0.5 text-foreground hover:text-primary transition-colors relative">
                 <ShoppingCart className="w-5 h-5" />
                 <span className="text-xs">Корзина</span>
-              </button>
+                {totalItems > 0 && <span className="absolute -top-1 -right-2 w-4 h-4 rounded-full gradient-hero text-primary-foreground text-[10px] font-bold flex items-center justify-center">{totalItems}</span>}
+              </Link>
             </div>
           </div>
         </div>
@@ -201,9 +219,9 @@ const Header = () => {
           <div className="flex items-center justify-between py-2 border-t border-border">
             <div className="flex items-center gap-1">
               {navLinks.map(link => (
-                <button key={link} className="px-3 py-1.5 text-sm rounded-full hover:bg-secondary text-foreground transition-colors">
-                  {link}
-                </button>
+                <Link key={link.label} to={link.to} className="px-3 py-1.5 text-sm rounded-full hover:bg-secondary text-foreground transition-colors">
+                  {link.label}
+                </Link>
               ))}
             </div>
             <div className="flex items-center gap-3 text-muted-foreground">
