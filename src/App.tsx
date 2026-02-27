@@ -9,7 +9,10 @@ import { AdminLayout } from "./admin/components/AdminLayout";
 import DashboardPage from "./admin/pages/DashboardPage";
 import ParserPage from "./admin/pages/ParserPage";
 import ProductsPage from "./admin/pages/ProductsPage";
+import ProductDetailPage from "./admin/pages/ProductDetailPage";
 import CategoriesPage from "./admin/pages/CategoriesPage";
+import BrandsPage from "./admin/pages/BrandsPage";
+import FiltersPage from "./admin/pages/FiltersPage";
 import AiPage from "./admin/pages/AiPage";
 import SchedulerPage from "./admin/pages/SchedulerPage";
 import ExcludedPage from "./admin/pages/ExcludedPage";
@@ -33,7 +36,10 @@ const App = () => (
             <Route index element={<DashboardPage />} />
             <Route path="parser" element={<ParserPage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="products/:id" element={<ProductDetailPage />} />
             <Route path="categories" element={<CategoriesPage />} />
+            <Route path="brands" element={<BrandsPage />} />
+            <Route path="filters" element={<FiltersPage />} />
             <Route path="ai" element={<AiPage />} />
             <Route path="scheduler" element={<SchedulerPage />} />
             <Route path="excluded" element={<ExcludedPage />} />
