@@ -69,7 +69,7 @@ const MapSection = () => {
         const map = new window.ymaps.Map(containerRef.current, {
           center: MOSCOW_CENTER,
           zoom: 13,
-        });
+        }) as unknown as { geoObjects: { add: (obj: unknown) => void } };
         const placemark = new window.ymaps.Placemark(MOSCOW_CENTER);
         map.geoObjects.add(placemark);
       } catch {
