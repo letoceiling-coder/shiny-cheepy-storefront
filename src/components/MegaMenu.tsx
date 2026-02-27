@@ -44,7 +44,7 @@ const MegaMenu = ({ onClose }: MegaMenuProps) => {
   const topTabs = ["Мужское", "Женское", "Обувь и одежда", "Детская одежда", "Аксессуары", "Товары для дома"];
 
   return (
-    <div className="absolute left-0 right-0 top-full bg-popover border-t border-border animate-slide-down z-50">
+    <div className="absolute left-0 right-0 top-full bg-popover border-t border-border animate-slide-down z-[1100]">
       <div className="max-w-[1400px] mx-auto px-4 py-4">
         {/* Top tabs */}
         <div className="flex gap-2 mb-4">

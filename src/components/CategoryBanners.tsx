@@ -1,18 +1,18 @@
-import categoryShoes from "@/assets/category-shoes.jpg";
-import categoryBags from "@/assets/category-bags.jpg";
+import promo1 from "@/assets/cheepy/promo-1.jpg";
+import promo2 from "@/assets/cheepy/promo-2.jpg";
 
 const banners = [
-  { image: categoryShoes, title: "Лучшее в обуви", cta: "Смотреть" },
-  { image: categoryBags, title: "Лучшее в аксессуарах", cta: "Смотреть" },
+  { image: promo1, title: "Лучшее в обуви", cta: "Смотреть" },
+  { image: promo2, title: "Лучшее в аксессуарах", cta: "Смотреть" },
 ];
 
 const CategoryBanners = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+    <div className="grid grid-cols-3 gap-4 mb-10">
       {banners.map((banner, i) => (
         <div
           key={i}
-          className="relative h-[200px] rounded-2xl overflow-hidden group cursor-pointer"
+          className={`relative h-[200px] rounded-2xl overflow-hidden group cursor-pointer ${i === 0 ? "col-span-2" : "col-span-1"}`}
         >
           <img
             src={banner.image}

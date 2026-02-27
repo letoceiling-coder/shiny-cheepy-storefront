@@ -54,12 +54,12 @@ const Header = () => {
     <>
       <header
         ref={headerRef}
-        className={`fixed top-0 left-0 right-0 z-50 bg-background border-b border-border transition-all duration-300 ${isCompact ? "py-2" : "py-0"}`}
+        className={`fixed top-0 left-0 right-0 z-[1000] bg-background border-b border-border transition-all duration-300 ${isCompact ? "py-2" : "py-0"}`}
       >
         {/* Top bar */}
         <div
-          className={`max-w-[1400px] mx-auto px-4 transition-all duration-300 overflow-hidden ${
-            isCompact ? "max-h-0 opacity-0" : "max-h-12 opacity-100 py-2"
+          className={`max-w-[1400px] mx-auto px-4 transition-all duration-300 ${
+            isCompact ? "max-h-0 opacity-0 overflow-hidden" : "max-h-12 opacity-100 py-2"
           }`}
         >
           <div className="flex items-center justify-between text-sm">
@@ -74,7 +74,7 @@ const Header = () => {
                   <ChevronDown className="w-3 h-3" />
                 </button>
                 {showCurrency && (
-                  <div className="absolute top-full left-0 mt-1 bg-popover border border-border rounded-lg py-1 z-[100] min-w-[80px]" style={{ position: 'absolute' }}>
+                  <div className="absolute top-full left-0 mt-1 bg-popover border border-border rounded-lg py-1 z-[1100] min-w-[80px]" style={{ position: 'absolute' }}>
                     {currencies.map(c => (
                       <button key={c} onClick={() => { setSelectedCurrency(c); setShowCurrency(false); }}
                         className="block w-full text-left px-3 py-1.5 hover:bg-secondary transition-colors text-popover-foreground">
@@ -95,7 +95,7 @@ const Header = () => {
                   {selectedCity}
                 </button>
                 {showCity && (
-                  <div className="absolute top-full left-0 mt-1 bg-popover border border-border rounded-lg py-1 z-[100] min-w-[180px]">
+                  <div className="absolute top-full left-0 mt-1 bg-popover border border-border rounded-lg py-1 z-[1100] min-w-[180px]">
                     {cities.map(c => (
                       <button key={c} onClick={() => { setSelectedCity(c); setShowCity(false); }}
                         className="block w-full text-left px-3 py-1.5 hover:bg-secondary transition-colors text-popover-foreground">
@@ -194,8 +194,8 @@ const Header = () => {
 
         {/* Nav links */}
         <div
-          className={`max-w-[1400px] mx-auto px-4 transition-all duration-300 overflow-hidden hidden lg:block ${
-            isCompact ? "max-h-0 opacity-0" : "max-h-12 opacity-100"
+          className={`max-w-[1400px] mx-auto px-4 transition-all duration-300 hidden lg:block ${
+            isCompact ? "max-h-0 opacity-0 overflow-hidden" : "max-h-12 opacity-100"
           }`}
         >
           <div className="flex items-center justify-between py-2 border-t border-border">
