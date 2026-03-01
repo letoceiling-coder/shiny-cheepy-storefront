@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import HeroSlider from "@/components/HeroSlider";
 import CategorySliderSection from "@/components/home/CategorySliderSection";
+import LightCategoryNav from "@/components/home/LightCategoryNav";
 import HotDeals from "@/components/sections/HotDeals";
 import PopularCategories from "@/components/sections/PopularCategories";
 import SpecialOffers from "@/components/sections/SpecialOffers";
@@ -36,6 +37,9 @@ const Index = () => {
 
           {/* New Category Slider Section from strict */}
           <CategorySliderSection />
+
+          {/* Light Category Nav from strict */}
+          <LightCategoryNav />
 
           <PopularCategories />
 
