@@ -1,0 +1,507 @@
+/**
+ * API client for sadavod.loc Laravel backend
+ */
+
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://sadavod.loc/api/v1';
+
+// ──────────────────────────────────────────────
+// HTTP helpers
+// ──────────────────────────────────────────────
+
+function getToken(): string | null {
+  return localStorage.getItem('admin_token');
+}
+
+function authHeaders(): Record<string, string> {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function request<T>(
+  method: string,
+  path: string,
+  body?: unknown,
+  isPublic = false
+): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+
+  if (!isPublic) {
+    Object.assign(headers, authHeaders());
+  }
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
+    headers,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ error: res.statusText }));
+    throw new ApiError(res.status, error.error || res.statusText, error.errors);
+  }
+
+  if (res.status === 204) return undefined as T;
+  return res.json();
+}
+
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+    public errors?: Record<string, string[]>
+  ) {
+    super(message);
+  }
+}
+
+const get = <T>(path: string, isPublic = false) => request<T>('GET', path, undefined, isPublic);
+const post = <T>(path: string, body?: unknown, isPublic = false) => request<T>('POST', path, body, isPublic);
+const put = <T>(path: string, body?: unknown) => request<T>('PUT', path, body);
+const patch = <T>(path: string, body?: unknown) => request<T>('PATCH', path, body);
+const del = <T>(path: string) => request<T>('DELETE', path);
+
+// ──────────────────────────────────────────────
+// Types
+// ──────────────────────────────────────────────
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: { total: number; per_page: number; current_page: number; last_page: number };
+}
+
+export interface Product {
+  id: number;
+  external_id: string;
+  title: string;
+  price: string | null;
+  price_raw: number | null;
+  status: 'active' | 'hidden' | 'excluded' | 'error' | 'pending';
+  is_relevant: boolean;
+  photos_count: number;
+  thumbnail: string | null;
+  category: { id: number; name: string; slug: string } | null;
+  seller: { id: number; name: string; slug: string } | null;
+  parsed_at: string | null;
+}
+
+export interface ProductFull extends Product {
+  source_url: string | null;
+  description: string | null;
+  color: string | null;
+  size_range: string | null;
+  characteristics: Record<string, string> | null;
+  source_link: string | null;
+  source_published_at: string | null;
+  category_slugs: string[];
+  photos: string[];
+  photos_downloaded: boolean;
+  photos_detail: Array<{
+    id: number;
+    original_url: string;
+    local_path: string | null;
+    is_primary: boolean;
+    download_status: string;
+    sort_order: number;
+  }>;
+  attributes: Array<{ name: string; value: string; type: string }>;
+  brand: { id: number; name: string; slug: string; logo_url: string | null } | null;
+}
+
+export interface Category {
+  id: number;
+  external_slug: string | null;
+  name: string;
+  slug: string;
+  parent_id: number | null;
+  sort_order: number;
+  icon: string | null;
+  enabled: boolean;
+  linked_to_parser: boolean;
+  products_count: number;
+  last_parsed_at: string | null;
+  children?: Category[];
+}
+
+export interface Seller {
+  id: number;
+  slug: string;
+  name: string;
+  pavilion: string | null;
+  pavilion_line: string | null;
+  pavilion_number: string | null;
+  status: string;
+  is_verified: boolean;
+  products_count: number;
+}
+
+export interface SellerFull extends Seller {
+  source_url: string | null;
+  description: string | null;
+  contacts: {
+    phone: string | null;
+    whatsapp_url: string | null;
+    whatsapp_number: string | null;
+    telegram_url: string | null;
+    vk_url: string | null;
+  };
+  seller_categories: string[];
+}
+
+export interface Brand {
+  id: number;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  status: string;
+  seo_title: string | null;
+  category_ids: number[];
+}
+
+export interface ExcludedRule {
+  id: number;
+  pattern: string;
+  type: 'word' | 'phrase' | 'regex';
+  action: 'delete' | 'replace' | 'hide' | 'flag';
+  replacement: string | null;
+  scope: 'global' | 'category' | 'product_type' | 'temporary';
+  category_id: number | null;
+  is_active: boolean;
+  priority: number;
+  expires_at: string | null;
+  comment: string | null;
+}
+
+export interface FilterConfig {
+  id: number;
+  category_id: number;
+  attr_name: string;
+  display_name: string;
+  display_type: 'checkbox' | 'select' | 'range' | 'radio';
+  sort_order: number;
+  is_active: boolean;
+  is_filterable: boolean;
+  preset_values: string[] | null;
+  range_min: number | null;
+  range_max: number | null;
+}
+
+export interface ParserJob {
+  id: number;
+  type: string;
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
+  progress: {
+    categories: { done: number; total: number };
+    products: { done: number; total: number };
+    saved: number;
+    errors: number;
+    photos: { downloaded: number; failed: number };
+    percent: number;
+    current_action: string | null;
+    current_page: number;
+    total_pages: number;
+    current_category: string | null;
+  };
+  started_at: string | null;
+  finished_at: string | null;
+  error_message: string | null;
+  created_at: string;
+}
+
+export interface ParserStatus {
+  is_running: boolean;
+  current_job: ParserJob | null;
+  last_completed: ParserJob | null;
+}
+
+export interface DashboardData {
+  products: {
+    total: number; active: number; hidden: number; new_today: number;
+    errors: number; with_photos: number; pending_photos: number;
+  };
+  categories: { total: number; enabled: number; linked_to_parser: number };
+  sellers: { total: number; active: number };
+  parser: {
+    is_running: boolean;
+    current_job: { id: number; status: string; current_action: string | null; saved_products: number; progress_percent: number } | null;
+    last_run_at: string | null;
+    last_run_saved: number | null;
+  };
+  weekly_stats: Record<string, number>;
+  top_categories: Array<{ id: number; name: string; slug: string; products_count: number }>;
+  recent_logs: Array<{ id: number; level: string; module: string; message: string; logged_at: string }>;
+}
+
+export interface Setting {
+  value: string | number | boolean | null;
+  type: string;
+  label: string | null;
+  description: string | null;
+}
+
+export interface LogEntry {
+  id: number;
+  job_id: number | null;
+  level: 'info' | 'warn' | 'error' | 'debug';
+  module: string;
+  message: string;
+  context: unknown;
+  logged_at: string;
+}
+
+// ──────────────────────────────────────────────
+// AUTH
+// ──────────────────────────────────────────────
+
+export const authApi = {
+  login: (email: string, password: string) =>
+    post<{ token: string; user: { id: number; name: string; email: string; role: string } }>(
+      '/auth/login', { email, password }, true
+    ),
+  me: () => get<{ user: { id: number; name: string; email: string; role: string } }>('/auth/me'),
+  refresh: () => post<{ token: string }>('/auth/refresh'),
+  logout: () => { localStorage.removeItem('admin_token'); },
+};
+
+// ──────────────────────────────────────────────
+// DASHBOARD
+// ──────────────────────────────────────────────
+
+export const dashboardApi = {
+  get: () => get<DashboardData>('/dashboard'),
+};
+
+// ──────────────────────────────────────────────
+// PARSER
+// ──────────────────────────────────────────────
+
+export interface StartParserOptions {
+  type?: 'full' | 'menu_only' | 'category' | 'seller';
+  categories?: string[];
+  linked_only?: boolean;
+  products_per_category?: number;
+  max_pages?: number;
+  no_details?: boolean;
+  save_photos?: boolean;
+  save_to_db?: boolean;
+  category_slug?: string;
+}
+
+export const parserApi = {
+  status: () => get<ParserStatus>('/parser/status'),
+  start: (opts?: StartParserOptions) => post<{ message: string; job_id: number; job: ParserJob }>('/parser/start', opts),
+  stop: () => post<{ message: string }>('/parser/stop'),
+  jobs: (page = 1, perPage = 20) => get<PaginatedResponse<ParserJob>>(`/parser/jobs?page=${page}&per_page=${perPage}`),
+  jobDetail: (id: number) => get<ParserJob & { logs: LogEntry[] }>(`/parser/jobs/${id}`),
+  downloadPhotos: (opts?: { limit?: number; product_id?: number }) =>
+    post<{ downloaded: number; failed: number; skipped: number; products: number }>('/parser/photos/download', opts),
+
+  /** SSE stream — возвращает EventSource */
+  progressStream: (jobId?: number): EventSource => {
+    const url = `${BASE_URL}/parser/progress${jobId ? `?job_id=${jobId}` : ''}&token=${getToken()}`;
+    return new EventSource(url);
+  },
+};
+
+// ──────────────────────────────────────────────
+// PRODUCTS (Admin)
+// ──────────────────────────────────────────────
+
+export interface ProductFilters {
+  search?: string;
+  status?: string;
+  category_id?: number;
+  seller_id?: number;
+  photos_only?: boolean;
+  no_photos?: boolean;
+  price_from?: number;
+  price_to?: number;
+  is_relevant?: boolean;
+  sort_by?: 'parsed_at' | 'price_raw' | 'title' | 'created_at' | 'photos_count';
+  sort_dir?: 'asc' | 'desc';
+  page?: number;
+  per_page?: number;
+}
+
+export const productsApi = {
+  list: (filters: ProductFilters = {}) => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([k, v]) => { if (v !== undefined && v !== '') params.set(k, String(v)); });
+    return get<PaginatedResponse<Product>>(`/products?${params}`);
+  },
+  get: (id: string | number) => get<ProductFull>(`/products/${id}`),
+  update: (id: number, data: Partial<ProductFull>) => patch<ProductFull>(`/products/${id}`, data),
+  delete: (id: number) => del(`/products/${id}`),
+  bulk: (ids: number[], action: 'delete' | 'hide' | 'publish') =>
+    post<{ message: string }>('/products/bulk', { ids, action }),
+};
+
+// ──────────────────────────────────────────────
+// CATEGORIES (Admin)
+// ──────────────────────────────────────────────
+
+export const categoriesApi = {
+  list: (params?: { tree?: boolean; search?: string; enabled_only?: boolean; per_page?: number }) => {
+    const q = new URLSearchParams();
+    if (params) Object.entries(params).forEach(([k, v]) => { if (v !== undefined) q.set(k, String(v)); });
+    return get<{ data: Category[]; total?: number }>(`/categories?${q}`);
+  },
+  get: (id: number) => get<Category & { parent: Category | null; parser_settings: Record<string, number> }>(`/categories/${id}`),
+  update: (id: number, data: Partial<Category & { parser_settings: Record<string, number> }>) =>
+    patch<Category>(`/categories/${id}`, data),
+  reorder: (items: Array<{ id: number; sort_order: number; parent_id?: number | null }>) =>
+    post('/categories/reorder', { items }),
+  availableFilters: (id: number) => get<{ category_id: number; attributes: Array<{ attr_name: string; values: string[] }> }>(
+    `/categories/${id}/filters`
+  ),
+};
+
+// ──────────────────────────────────────────────
+// SELLERS (Admin)
+// ──────────────────────────────────────────────
+
+export const sellersApi = {
+  list: (params?: { search?: string; status?: string; has_products?: boolean; page?: number; per_page?: number }) => {
+    const q = new URLSearchParams();
+    if (params) Object.entries(params).forEach(([k, v]) => { if (v !== undefined) q.set(k, String(v)); });
+    return get<PaginatedResponse<Seller>>(`/sellers?${q}`);
+  },
+  get: (slug: string) => get<SellerFull>(`/sellers/${slug}`),
+  products: (slug: string, page = 1) => get<PaginatedResponse<Product> & { seller: Seller }>(`/sellers/${slug}/products?page=${page}`),
+  update: (id: number, data: Partial<Seller>) => patch<Seller>(`/sellers/${id}`, data),
+};
+
+// ──────────────────────────────────────────────
+// BRANDS (Admin)
+// ──────────────────────────────────────────────
+
+export const brandsApi = {
+  list: (params?: { search?: string; status?: string; page?: number }) => {
+    const q = new URLSearchParams();
+    if (params) Object.entries(params).forEach(([k, v]) => { if (v !== undefined) q.set(k, String(v)); });
+    return get<{ data: Brand[]; total: number }>(`/brands?${q}`);
+  },
+  get: (id: number) => get<Brand>(`/brands/${id}`),
+  create: (data: Partial<Brand>) => post<Brand>('/brands', data),
+  update: (id: number, data: Partial<Brand>) => put<Brand>(`/brands/${id}`, data),
+  delete: (id: number) => del(`/brands/${id}`),
+};
+
+// ──────────────────────────────────────────────
+// EXCLUDED RULES (Admin)
+// ──────────────────────────────────────────────
+
+export const excludedApi = {
+  list: (params?: { scope?: string; type?: string; active_only?: boolean; per_page?: number }) => {
+    const q = new URLSearchParams();
+    if (params) Object.entries(params).forEach(([k, v]) => { if (v !== undefined) q.set(k, String(v)); });
+    return get<{ data: ExcludedRule[]; total: number }>(`/excluded?${q}`);
+  },
+  create: (data: Partial<ExcludedRule>) => post<ExcludedRule>('/excluded', data),
+  update: (id: number, data: Partial<ExcludedRule>) => put<ExcludedRule>(`/excluded/${id}`, data),
+  delete: (id: number) => del(`/excluded/${id}`),
+  test: (text: string, field?: string, categoryId?: number) =>
+    post<{ original: string; result: string; flagged: boolean; hide: boolean; delete: boolean }>(
+      '/excluded/test', { text, field, category_id: categoryId }
+    ),
+};
+
+// ──────────────────────────────────────────────
+// FILTERS CONFIG (Admin)
+// ──────────────────────────────────────────────
+
+export const filtersApi = {
+  list: (categoryId?: number, activeOnly?: boolean) => {
+    const q = new URLSearchParams();
+    if (categoryId) q.set('category_id', String(categoryId));
+    if (activeOnly) q.set('active_only', '1');
+    return get<{ data: FilterConfig[] }>(`/filters?${q}`);
+  },
+  create: (data: Partial<FilterConfig>) => post<FilterConfig>('/filters', data),
+  update: (id: number, data: Partial<FilterConfig>) => put<FilterConfig>(`/filters/${id}`, data),
+  delete: (id: number) => del(`/filters/${id}`),
+  values: (categoryId: number) =>
+    get<{ category_id: number; filters: Array<{ attr_name: string; display_name: string; display_type: string; values?: string[]; min?: number; max?: number }> }>(
+      `/filters/${categoryId}/values`
+    ),
+};
+
+// ──────────────────────────────────────────────
+// LOGS (Admin)
+// ──────────────────────────────────────────────
+
+export const logsApi = {
+  list: (params?: { level?: string; module?: string; job_id?: number; search?: string; page?: number; per_page?: number }) => {
+    const q = new URLSearchParams();
+    if (params) Object.entries(params).forEach(([k, v]) => { if (v !== undefined) q.set(k, String(v)); });
+    return get<PaginatedResponse<LogEntry>>(`/logs?${q}`);
+  },
+  clear: (before?: string) => del(`/logs/clear${before ? `?before=${before}` : ''}`),
+};
+
+// ──────────────────────────────────────────────
+// SETTINGS (Admin)
+// ──────────────────────────────────────────────
+
+export const settingsApi = {
+  list: (group?: string) =>
+    get<{ data: Record<string, Record<string, Setting>> }>(`/settings${group ? `?group=${group}` : ''}`),
+  update: (settings: Record<string, unknown>) => put<{ message: string; count: number }>('/settings', { settings }),
+  updateOne: (key: string, value: unknown, group?: string) =>
+    put(`/settings/${key}`, { value, group }),
+};
+
+// ──────────────────────────────────────────────
+// PUBLIC API (user-facing pages)
+// ──────────────────────────────────────────────
+
+export const publicApi = {
+  menu: () => get<{ categories: Category[] }>('/public/menu', true),
+
+  categoryProducts: (
+    slug: string,
+    params?: { page?: number; per_page?: number; sort_by?: string; search?: string; price_from?: number; price_to?: number; [key: string]: unknown }
+  ) => {
+    const q = new URLSearchParams();
+    if (params) Object.entries(params).forEach(([k, v]) => { if (v !== undefined) q.set(k, String(v)); });
+    return get<{
+      category: { id: number; name: string; slug: string };
+      filters: Array<{ attr_name: string; display_name: string; display_type: string; values?: string[] }>;
+      data: Product[];
+      meta: PaginatedResponse<Product>['meta'];
+    }>(`/public/categories/${slug}/products?${q}`, true);
+  },
+
+  product: (externalId: string) =>
+    get<{ product: ProductFull; seller_products: Product[] }>(`/public/products/${externalId}`, true),
+
+  seller: (slug: string, page = 1) =>
+    get<{ seller: SellerFull; data: Product[]; meta: PaginatedResponse<Product>['meta'] }>(
+      `/public/sellers/${slug}?page=${page}`, true
+    ),
+
+  search: (q: string, page = 1, perPage = 20) =>
+    get<{ query: string; data: Product[]; meta: PaginatedResponse<Product>['meta'] }>(
+      `/public/search?q=${encodeURIComponent(q)}&page=${page}&per_page=${perPage}`, true
+    ),
+
+  featured: (limit = 24) =>
+    get<{ data: Product[] }>(`/public/featured?limit=${limit}`, true),
+};
+
+export default {
+  auth: authApi,
+  dashboard: dashboardApi,
+  parser: parserApi,
+  products: productsApi,
+  categories: categoriesApi,
+  sellers: sellersApi,
+  brands: brandsApi,
+  excluded: excludedApi,
+  filters: filtersApi,
+  logs: logsApi,
+  settings: settingsApi,
+  public: publicApi,
+};
