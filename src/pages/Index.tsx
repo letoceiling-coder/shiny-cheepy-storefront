@@ -10,6 +10,11 @@ import SpecialOffers from "@/components/sections/SpecialOffers";
 import Bestsellers from "@/components/sections/Bestsellers";
 import TrendingProducts from "@/components/sections/TrendingProducts";
 import CustomerReviews from "@/components/sections/CustomerReviews";
+import ReviewsSlider from "@/components/sections/ReviewsSlider";
+import CompactCategories from "@/components/sections/CompactCategories";
+import IconCategories from "@/components/sections/IconCategories";
+import BrandsSlider from "@/components/sections/BrandsSlider";
+import AllCategoriesGrid from "@/components/sections/AllCategoriesGrid";
 import TopRatedSellers from "@/components/sections/TopRatedSellers";
 import VerifiedSellersRow from "@/components/sections/VerifiedSellersRow";
 import NewSellersBlock from "@/components/sections/NewSellersBlock";
@@ -68,6 +73,16 @@ const Index = () => {
 
         <div className="max-w-[1400px] mx-auto px-4">
           <CustomerReviews />
+
+          <ReviewsSlider />
+
+          <CompactCategories />
+
+          <IconCategories />
+
+          <BrandsSlider />
+
+          <AllCategoriesGrid />
 
           <SellersSection />
 
