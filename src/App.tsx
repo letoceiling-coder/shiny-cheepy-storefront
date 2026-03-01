@@ -43,6 +43,18 @@ import ExcludedPage from "./admin/pages/ExcludedPage";
 import LogsPage from "./admin/pages/LogsPage";
 import RolesPage from "./admin/pages/RolesPage";
 import SettingsPage from "./admin/pages/SettingsPage";
+import { CrmLayout } from "./crm/layout/CrmLayout";
+import CrmDashboardPage from "./crm/pages/CrmDashboardPage";
+import CrmContentPage from "./crm/pages/CrmContentPage";
+import CrmProductsPage from "./crm/pages/CrmProductsPage";
+import CrmCategoriesPage from "./crm/pages/CrmCategoriesPage";
+import CrmOrdersPage from "./crm/pages/CrmOrdersPage";
+import CrmUsersPage from "./crm/pages/CrmUsersPage";
+import CrmSellersPage from "./crm/pages/CrmSellersPage";
+import CrmAnalyticsPage from "./crm/pages/CrmAnalyticsPage";
+import CrmPromotionsPage from "./crm/pages/CrmPromotionsPage";
+import CrmReviewsPage from "./crm/pages/CrmReviewsPage";
+import CrmSettingsPage from "./crm/pages/CrmSettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +103,22 @@ function AnimatedRoutes() {
           <Route path="logs" element={<LogsPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="settings" element={<SettingsPage />} />
+        </Route>
+
+        {/* CRM routes */}
+        <Route path="/crm" element={<CrmLayout />}>
+          <Route index element={<CrmDashboardPage />} />
+          <Route path="dashboard" element={<CrmDashboardPage />} />
+          <Route path="content" element={<CrmContentPage />} />
+          <Route path="products" element={<CrmProductsPage />} />
+          <Route path="categories" element={<CrmCategoriesPage />} />
+          <Route path="orders" element={<CrmOrdersPage />} />
+          <Route path="users" element={<CrmUsersPage />} />
+          <Route path="sellers" element={<CrmSellersPage />} />
+          <Route path="analytics" element={<CrmAnalyticsPage />} />
+          <Route path="promotions" element={<CrmPromotionsPage />} />
+          <Route path="reviews" element={<CrmReviewsPage />} />
+          <Route path="settings" element={<CrmSettingsPage />} />
         </Route>
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
