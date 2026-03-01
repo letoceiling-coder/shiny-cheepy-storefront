@@ -1,20 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { DataTable, Column } from "../components/DataTable";
 import { StatusBadge } from "../components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { moderationItems, ModerationItem } from "../mock/moderation";
-import { Search, CheckCircle, XCircle, RotateCcw, Ban } from "lucide-react";
+import { Search } from "lucide-react";
 
 export default function CrmModerationPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selected, setSelected] = useState<ModerationItem | null>(null);
-  const [rejectReason, setRejectReason] = useState("");
+  const navigate = useNavigate();
 
   const filtered = moderationItems.filter(m => {
     if (search && !m.title.toLowerCase().includes(search.toLowerCase()) && !m.seller.toLowerCase().includes(search.toLowerCase())) return false;
@@ -37,10 +35,7 @@ export default function CrmModerationPage() {
 
   return (
     <div className="space-y-4 animate-fade-in">
-      <PageHeader
-        title="Модерация"
-        description={`${pending} товаров ожидают проверки`}
-      />
+      <PageHeader title="Модерация" description={`${pending} товаров ожидают проверки`} />
 
       <div className="flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
@@ -58,58 +53,8 @@ export default function CrmModerationPage() {
         </Select>
       </div>
 
-      <DataTable data={filtered} columns={columns} onRowClick={m => setSelected(m)} />
+      <DataTable data={filtered} columns={columns} onRowClick={m => navigate(`/crm/moderation/${m.id}`)} />
       <p className="text-xs text-muted-foreground">Показано {filtered.length} из {moderationItems.length}</p>
-
-      <Dialog open={!!selected} onOpenChange={() => { setSelected(null); setRejectReason(""); }}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Модерация: {selected?.title}</DialogTitle></DialogHeader>
-          {selected && (
-            <div className="space-y-4 mt-2">
-              <div className="flex gap-4">
-                <div className="h-24 w-24 rounded-lg bg-muted bg-cover bg-center shrink-0" style={{ backgroundImage: `url(${selected.image})` }} />
-                <div className="space-y-1 text-sm">
-                  <p><span className="text-muted-foreground">Категория:</span> {selected.category}</p>
-                  <p><span className="text-muted-foreground">Продавец:</span> {selected.seller}</p>
-                  <p><span className="text-muted-foreground">Дата загрузки:</span> {selected.uploadedAt}</p>
-                  <div className="pt-1"><StatusBadge status={selected.status} /></div>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">История модерации</h4>
-                <div className="space-y-1.5">
-                  {selected.history.map((h, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm">
-                      <div className="h-2 w-2 rounded-full bg-primary" />
-                      <span>{h.action}</span>
-                      <span className="text-xs text-muted-foreground ml-auto">{h.date}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {selected.status === 'pending' && (
-                <>
-                  <Textarea
-                    value={rejectReason}
-                    onChange={e => setRejectReason(e.target.value)}
-                    placeholder="Причина отклонения (при необходимости)..."
-                    className="text-sm"
-                    rows={2}
-                  />
-                  <div className="flex gap-2">
-                    <Button size="sm" className="gap-1.5 flex-1"><CheckCircle className="h-3.5 w-3.5" /> Одобрить</Button>
-                    <Button size="sm" variant="destructive" className="gap-1.5 flex-1"><XCircle className="h-3.5 w-3.5" /> Отклонить</Button>
-                    <Button size="sm" variant="outline" className="gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> На доработку</Button>
-                    <Button size="sm" variant="outline" className="gap-1.5 text-destructive"><Ban className="h-3.5 w-3.5" /> Блокировать</Button>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

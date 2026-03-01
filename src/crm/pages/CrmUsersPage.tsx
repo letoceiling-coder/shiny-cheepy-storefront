@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { DataTable, Column } from "../components/DataTable";
 import { StatusBadge } from "../components/StatusBadge";
@@ -14,6 +15,7 @@ export default function CrmUsersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const navigate = useNavigate();
 
   const filtered = crmUsers.filter(u => {
     if (search && !u.name.toLowerCase().includes(search.toLowerCase()) && !u.email.toLowerCase().includes(search.toLowerCase())) return false;
@@ -40,7 +42,6 @@ export default function CrmUsersPage() {
         description={`${crmUsers.length} пользователей`}
         actions={<Button variant="outline" size="sm" className="gap-1.5"><Download className="h-3.5 w-3.5" /> Экспорт</Button>}
       />
-
       <div className="flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -66,8 +67,7 @@ export default function CrmUsersPage() {
           </SelectContent>
         </Select>
       </div>
-
-      <DataTable data={filtered.slice(0, 50)} columns={columns} />
+      <DataTable data={filtered.slice(0, 50)} columns={columns} onRowClick={u => navigate(`/crm/users/${u.id}`)} />
       <p className="text-xs text-muted-foreground">Показано {Math.min(50, filtered.length)} из {filtered.length}</p>
     </div>
   );

@@ -66,6 +66,12 @@ import CrmMarketingPage from "./crm/pages/CrmMarketingPage";
 import CrmTemplatesPage from "./crm/pages/CrmTemplatesPage";
 import CrmNotificationsPage from "./crm/pages/CrmNotificationsPage";
 import CrmIntegrationsPage from "./crm/pages/CrmIntegrationsPage";
+import CrmOrderDetailPage from "./crm/pages/CrmOrderDetailPage";
+import CrmProductDetailPage from "./crm/pages/CrmProductDetailPage";
+import CrmModerationDetailPage from "./crm/pages/CrmModerationDetailPage";
+import CrmSellerDetailPage from "./crm/pages/CrmSellerDetailPage";
+import CrmUserDetailPage from "./crm/pages/CrmUserDetailPage";
+import CrmTenantsPage from "./crm/pages/CrmTenantsPage";
 
 const queryClient = new QueryClient();
 
@@ -123,9 +129,12 @@ function AnimatedRoutes() {
           <Route path="content" element={<CrmContentPage />} />
           <Route path="notifications" element={<CrmNotificationsPage />} />
           <Route path="products" element={<CrmProductsPage />} />
+          <Route path="products/:id" element={<CrmProductDetailPage />} />
           <Route path="categories" element={<CrmCategoriesPage />} />
           <Route path="moderation" element={<CrmModerationPage />} />
+          <Route path="moderation/:id" element={<CrmModerationDetailPage />} />
           <Route path="orders" element={<CrmOrdersPage />} />
+          <Route path="orders/:id" element={<CrmOrderDetailPage />} />
           <Route path="fulfillment" element={<CrmFulfillmentPage />} />
           <Route path="delivery" element={<CrmDeliveryPage />} />
           <Route path="regions" element={<CrmRegionsPage />} />
@@ -136,9 +145,12 @@ function AnimatedRoutes() {
           <Route path="marketing" element={<CrmMarketingPage />} />
           <Route path="templates" element={<CrmTemplatesPage />} />
           <Route path="users" element={<CrmUsersPage />} />
+          <Route path="users/:id" element={<CrmUserDetailPage />} />
           <Route path="sellers" element={<CrmSellersPage />} />
+          <Route path="sellers/:id" element={<CrmSellerDetailPage />} />
           <Route path="reviews" element={<CrmReviewsPage />} />
           <Route path="analytics" element={<CrmAnalyticsPage />} />
+          <Route path="tenants" element={<CrmTenantsPage />} />
           <Route path="integrations" element={<CrmIntegrationsPage />} />
           <Route path="settings" element={<CrmSettingsPage />} />
         </Route>
