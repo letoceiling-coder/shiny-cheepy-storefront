@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Search, User, Heart, ShoppingCart, Grid2X2, ChevronDown, Send, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import MegaMenu from "./MegaMenu";
+import MobileCatalogMenu from "./MobileCatalogMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
