@@ -3,7 +3,6 @@ import Footer from "@/components/Footer";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import HeroSlider from "@/components/HeroSlider";
 import CategorySliderSection from "@/components/home/CategorySliderSection";
-import LightCategoryNav from "@/components/home/LightCategoryNav";
 import HotDeals from "@/components/sections/HotDeals";
 import PopularCategories from "@/components/sections/PopularCategories";
 import SpecialOffers from "@/components/sections/SpecialOffers";
@@ -65,9 +64,6 @@ const Index = () => {
 
         <div className="max-w-[1400px] mx-auto px-4">
           <CustomerReviews />
-
-          {/* New Light Category Nav from strict */}
-          <LightCategoryNav />
 
           <SellersSection />
 
