@@ -1,16 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { DataTable, Column } from "../components/DataTable";
 import { StatusBadge } from "../components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { crmProducts, CrmProduct } from "../data/mock-data";
 import { Plus, Search, Download, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const fmt = (n: number) => new Intl.NumberFormat('ru-RU').format(n);
 
@@ -18,6 +16,7 @@ export default function CrmProductsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const navigate = useNavigate();
 
   const filtered = crmProducts.filter(p => {
     if (search && !p.title.toLowerCase().includes(search.toLowerCase()) && !p.sku.toLowerCase().includes(search.toLowerCase())) return false;
@@ -65,55 +64,9 @@ export default function CrmProductsPage() {
         title="Товары"
         description={`${crmProducts.length} товаров в каталоге`}
         actions={
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="sm" className="gap-1.5"><Plus className="h-3.5 w-3.5" /> Добавить товар</Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader><DialogTitle>Новый товар</DialogTitle></DialogHeader>
-              <Tabs defaultValue="main" className="mt-2">
-                <TabsList className="grid grid-cols-4 w-full">
-                  <TabsTrigger value="main" className="text-xs">Основное</TabsTrigger>
-                  <TabsTrigger value="media" className="text-xs">Медиа</TabsTrigger>
-                  <TabsTrigger value="attrs" className="text-xs">Атрибуты</TabsTrigger>
-                  <TabsTrigger value="seo" className="text-xs">SEO</TabsTrigger>
-                </TabsList>
-                <TabsContent value="main" className="space-y-3 mt-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div><Label className="text-xs">Название</Label><Input className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">SKU</Label><Input className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">Цена</Label><Input type="number" className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">Старая цена</Label><Input type="number" className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">Категория</Label><Input className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">Остаток</Label><Input type="number" className="h-8 text-sm mt-1" /></div>
-                  </div>
-                  <div><Label className="text-xs">Описание</Label><Textarea className="mt-1 text-sm" rows={3} /></div>
-                </TabsContent>
-                <TabsContent value="media" className="mt-4">
-                  <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                    <p className="text-sm text-muted-foreground">Перетащите изображения или нажмите для загрузки</p>
-                  </div>
-                </TabsContent>
-                <TabsContent value="attrs" className="space-y-3 mt-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div><Label className="text-xs">Бренд</Label><Input className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">Материал</Label><Input className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">Цвет</Label><Input className="h-8 text-sm mt-1" /></div>
-                    <div><Label className="text-xs">Размеры</Label><Input className="h-8 text-sm mt-1" placeholder="S, M, L, XL" /></div>
-                  </div>
-                </TabsContent>
-                <TabsContent value="seo" className="space-y-3 mt-4">
-                  <div><Label className="text-xs">SEO Title</Label><Input className="h-8 text-sm mt-1" /></div>
-                  <div><Label className="text-xs">Meta Description</Label><Textarea className="mt-1 text-sm" rows={2} /></div>
-                  <div><Label className="text-xs">Slug</Label><Input className="h-8 text-sm mt-1" /></div>
-                </TabsContent>
-              </Tabs>
-              <div className="flex justify-end gap-2 mt-4">
-                <Button variant="outline" size="sm">Отмена</Button>
-                <Button size="sm">Сохранить</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <Link to="/crm/products/new">
+            <Button size="sm" className="gap-1.5"><Plus className="h-3.5 w-3.5" /> Добавить товар</Button>
+          </Link>
         }
       />
 
@@ -141,7 +94,7 @@ export default function CrmProductsPage() {
         <Button variant="outline" size="sm" className="h-8 gap-1.5 ml-auto"><Download className="h-3.5 w-3.5" /> Экспорт</Button>
       </div>
 
-      <DataTable data={filtered} columns={columns} />
+      <DataTable data={filtered} columns={columns} onRowClick={p => navigate(`/crm/products/${p.id}`)} />
       <p className="text-xs text-muted-foreground">Показано {filtered.length} из {crmProducts.length}</p>
     </div>
   );

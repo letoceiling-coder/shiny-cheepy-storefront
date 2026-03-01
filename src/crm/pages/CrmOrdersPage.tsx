@@ -1,11 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/PageHeader";
 import { DataTable, Column } from "../components/DataTable";
 import { StatusBadge } from "../components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { crmOrders, CrmOrder } from "../data/mock-data";
 import { Search, Download } from "lucide-react";
 
@@ -14,7 +14,7 @@ const fmt = (n: number) => new Intl.NumberFormat('ru-RU').format(n);
 export default function CrmOrdersPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedOrder, setSelectedOrder] = useState<CrmOrder | null>(null);
+  const navigate = useNavigate();
 
   const filtered = crmOrders.filter(o => {
     if (search && !o.number.toLowerCase().includes(search.toLowerCase()) && !o.userName.toLowerCase().includes(search.toLowerCase())) return false;
@@ -31,13 +31,6 @@ export default function CrmOrdersPage() {
     { key: "payment", title: "Оплата", render: o => <StatusBadge status={o.payment} />, className: "hidden md:table-cell" },
     { key: "delivery", title: "Доставка", className: "hidden lg:table-cell" },
     { key: "createdAt", title: "Дата" },
-  ];
-
-  const timeline = [
-    { status: "new", label: "Создан", date: selectedOrder?.createdAt },
-    { status: "confirmed", label: "Подтверждён", date: selectedOrder?.status !== 'new' ? selectedOrder?.updatedAt : null },
-    { status: "shipped", label: "Отправлен", date: ['shipped','delivered'].includes(selectedOrder?.status || '') ? selectedOrder?.updatedAt : null },
-    { status: "delivered", label: "Доставлен", date: selectedOrder?.status === 'delivered' ? selectedOrder?.updatedAt : null },
   ];
 
   return (
@@ -67,62 +60,7 @@ export default function CrmOrdersPage() {
         </Select>
       </div>
 
-      <DataTable data={filtered} columns={columns} onRowClick={o => setSelectedOrder(o)} />
-
-      <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Заказ {selectedOrder?.number}</DialogTitle></DialogHeader>
-          {selectedOrder && (
-            <div className="space-y-4 mt-2">
-              <div className="flex items-center gap-2">
-                <StatusBadge status={selectedOrder.status} />
-                <StatusBadge status={selectedOrder.payment} />
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Таймлайн</h4>
-                <div className="space-y-1.5">
-                  {timeline.map(t => (
-                    <div key={t.status} className="flex items-center gap-2">
-                      <div className={`h-2 w-2 rounded-full ${t.date ? 'bg-primary' : 'bg-border'}`} />
-                      <span className={`text-sm ${t.date ? '' : 'text-muted-foreground'}`}>{t.label}</span>
-                      {t.date && <span className="text-xs text-muted-foreground ml-auto">{t.date}</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Товары</h4>
-                {selectedOrder.items.map((item, i) => (
-                  <div key={i} className="flex justify-between text-sm">
-                    <span>{item.title} x{item.qty}</span>
-                    <span>{fmt(item.price * item.qty)} RUB</span>
-                  </div>
-                ))}
-                <div className="flex justify-between text-sm font-medium pt-2 border-t border-border">
-                  <span>Итого</span>
-                  <span>{fmt(selectedOrder.total)} RUB</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div><span className="text-muted-foreground text-xs block">Клиент</span>{selectedOrder.userName}</div>
-                <div><span className="text-muted-foreground text-xs block">Продавец</span>{selectedOrder.sellerName}</div>
-                <div><span className="text-muted-foreground text-xs block">Доставка</span>{selectedOrder.delivery}</div>
-                <div><span className="text-muted-foreground text-xs block">Адрес</span>{selectedOrder.address}</div>
-              </div>
-
-              {selectedOrder.comment && (
-                <div className="text-sm bg-muted/50 rounded-md p-3">
-                  <span className="text-xs text-muted-foreground block mb-1">Комментарий</span>
-                  {selectedOrder.comment}
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <DataTable data={filtered} columns={columns} onRowClick={o => navigate(`/crm/orders/${o.id}`)} />
     </div>
   );
 }
