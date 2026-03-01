@@ -55,6 +55,17 @@ import CrmAnalyticsPage from "./crm/pages/CrmAnalyticsPage";
 import CrmPromotionsPage from "./crm/pages/CrmPromotionsPage";
 import CrmReviewsPage from "./crm/pages/CrmReviewsPage";
 import CrmSettingsPage from "./crm/pages/CrmSettingsPage";
+import CrmModerationPage from "./crm/pages/CrmModerationPage";
+import CrmFulfillmentPage from "./crm/pages/CrmFulfillmentPage";
+import CrmPaymentsPage from "./crm/pages/CrmPaymentsPage";
+import CrmPayoutsPage from "./crm/pages/CrmPayoutsPage";
+import CrmDeliveryPage from "./crm/pages/CrmDeliveryPage";
+import CrmRegionsPage from "./crm/pages/CrmRegionsPage";
+import CrmCouponsPage from "./crm/pages/CrmCouponsPage";
+import CrmMarketingPage from "./crm/pages/CrmMarketingPage";
+import CrmTemplatesPage from "./crm/pages/CrmTemplatesPage";
+import CrmNotificationsPage from "./crm/pages/CrmNotificationsPage";
+import CrmIntegrationsPage from "./crm/pages/CrmIntegrationsPage";
 
 const queryClient = new QueryClient();
 
@@ -110,14 +121,25 @@ function AnimatedRoutes() {
           <Route index element={<CrmDashboardPage />} />
           <Route path="dashboard" element={<CrmDashboardPage />} />
           <Route path="content" element={<CrmContentPage />} />
+          <Route path="notifications" element={<CrmNotificationsPage />} />
           <Route path="products" element={<CrmProductsPage />} />
           <Route path="categories" element={<CrmCategoriesPage />} />
+          <Route path="moderation" element={<CrmModerationPage />} />
           <Route path="orders" element={<CrmOrdersPage />} />
+          <Route path="fulfillment" element={<CrmFulfillmentPage />} />
+          <Route path="delivery" element={<CrmDeliveryPage />} />
+          <Route path="regions" element={<CrmRegionsPage />} />
+          <Route path="payments" element={<CrmPaymentsPage />} />
+          <Route path="payouts" element={<CrmPayoutsPage />} />
+          <Route path="promotions" element={<CrmPromotionsPage />} />
+          <Route path="coupons" element={<CrmCouponsPage />} />
+          <Route path="marketing" element={<CrmMarketingPage />} />
+          <Route path="templates" element={<CrmTemplatesPage />} />
           <Route path="users" element={<CrmUsersPage />} />
           <Route path="sellers" element={<CrmSellersPage />} />
-          <Route path="analytics" element={<CrmAnalyticsPage />} />
-          <Route path="promotions" element={<CrmPromotionsPage />} />
           <Route path="reviews" element={<CrmReviewsPage />} />
+          <Route path="analytics" element={<CrmAnalyticsPage />} />
+          <Route path="integrations" element={<CrmIntegrationsPage />} />
           <Route path="settings" element={<CrmSettingsPage />} />
         </Route>
 
