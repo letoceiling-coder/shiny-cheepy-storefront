@@ -47,6 +47,8 @@ const Index = () => {
           {/* Light Category Nav from strict */}
           <LightCategoryNav />
 
+          <PromoBanners />
+
           <PopularCategories />
 
           <HotDeals />

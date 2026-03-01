@@ -273,6 +273,8 @@ const Header = () => {
         )}
       </header>
 
+      <MobileCatalogMenu open={mobileCatalogOpen} onClose={() => setMobileCatalogOpen(false)} />
+
       {/* Spacer */}
       <div className={`transition-all duration-300 ${isCompact ? "h-[60px]" : "h-[140px] lg:h-[160px]"}`} />
     </>
