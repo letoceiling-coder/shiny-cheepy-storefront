@@ -146,9 +146,35 @@ const Header = () => {
             {/* Categories button */}
             <button
               onClick={() => setShowCategories(!showCategories)}
-              className="hidden md:flex gradient-primary text-primary-foreground px-5 py-2.5 rounded-full items-center gap-2 font-semibold text-sm shrink-0 hover:opacity-90 transition-opacity"
+              className="hidden md:flex text-primary-foreground px-5 py-2.5 rounded-full items-center gap-2 font-semibold text-sm shrink-0 transition-all duration-200"
+              style={{
+                background: showCategories
+                  ? "linear-gradient(135deg, hsl(262, 83%, 65%), hsl(280, 90%, 67%))"
+                  : "linear-gradient(135deg, hsl(262, 83%, 58%), hsl(280, 90%, 60%))",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background =
+                  "linear-gradient(135deg, hsl(262, 83%, 65%), hsl(280, 90%, 67%))";
+              }}
+              onMouseLeave={(e) => {
+                if (!showCategories) {
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "linear-gradient(135deg, hsl(262, 83%, 58%), hsl(280, 90%, 60%))";
+                }
+              }}
             >
-              <Grid2X2 className="w-4 h-4" />
+              <span className="relative w-4 h-4">
+                <Grid2X2
+                  className={`w-4 h-4 absolute inset-0 transition-all duration-200 ${
+                    showCategories ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"
+                  }`}
+                />
+                <X
+                  className={`w-4 h-4 absolute inset-0 transition-all duration-200 ${
+                    showCategories ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"
+                  }`}
+                />
+              </span>
               Категории
             </button>
 

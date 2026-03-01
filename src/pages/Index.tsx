@@ -1,15 +1,11 @@
 import Header from "@/components/Header";
-import HeroSlider from "@/components/HeroSlider";
-import ProductGrid from "@/components/ProductGrid";
-import CategoryBanners from "@/components/CategoryBanners";
-import LookOfTheDay from "@/components/LookOfTheDay";
-import InformBlock from "@/components/InformBlock";
-import SellersSection from "@/components/SellersSection";
-import MapSection from "@/components/MapSection";
 import Footer from "@/components/Footer";
 import MobileBottomNav from "@/components/MobileBottomNav";
-import PopularCategories from "@/components/sections/PopularCategories";
+import HeroSlider from "@/components/HeroSlider";
+import CategorySliderSection from "@/components/home/CategorySliderSection";
+import LightCategoryNav from "@/components/home/LightCategoryNav";
 import HotDeals from "@/components/sections/HotDeals";
+import PopularCategories from "@/components/sections/PopularCategories";
 import SpecialOffers from "@/components/sections/SpecialOffers";
 import Bestsellers from "@/components/sections/Bestsellers";
 import TrendingProducts from "@/components/sections/TrendingProducts";
@@ -23,15 +19,24 @@ import TrustBadges from "@/components/sections/TrustBadges";
 import Newsletter from "@/components/sections/Newsletter";
 import FAQ from "@/components/sections/FAQ";
 import CTABlocks from "@/components/sections/CTABlocks";
+import InformBlock from "@/components/InformBlock";
+import SellersSection from "@/components/SellersSection";
+import MapSection from "@/components/MapSection";
+import ProductGrid from "@/components/ProductGrid";
+import CategoryBanners from "@/components/CategoryBanners";
+import LookOfTheDay from "@/components/LookOfTheDay";
 
 const Index = () => {
-  return(
+  return (
     <div className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
       <Header />
 
       <main>
         <div className="max-w-[1400px] mx-auto px-4">
           <HeroSlider />
+
+          {/* New Category Slider Section from strict */}
+          <CategorySliderSection />
 
           <PopularCategories />
 
@@ -60,6 +65,9 @@ const Index = () => {
 
         <div className="max-w-[1400px] mx-auto px-4">
           <CustomerReviews />
+
+          {/* New Light Category Nav from strict */}
+          <LightCategoryNav />
 
           <SellersSection />
 
