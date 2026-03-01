@@ -26,6 +26,7 @@ const Header = () => {
   const [showCurrency, setShowCurrency] = useState(false);
   const [showCity, setShowCity] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
