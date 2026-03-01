@@ -30,6 +30,7 @@ import MapSection from "@/components/MapSection";
 import ProductGrid from "@/components/ProductGrid";
 import CategoryBanners from "@/components/CategoryBanners";
 import LookOfTheDay from "@/components/LookOfTheDay";
+import PromoBanners from "@/components/sections/PromoBanners";
 
 const Index = () => {
   return (
@@ -45,6 +46,8 @@ const Index = () => {
 
           {/* Light Category Nav from strict */}
           <LightCategoryNav />
+
+          <PromoBanners />
 
           <PopularCategories />
 

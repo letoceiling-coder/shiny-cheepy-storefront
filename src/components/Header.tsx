@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Search, User, Heart, ShoppingCart, Grid2X2, ChevronDown, Send, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import MegaMenu from "./MegaMenu";
+import MobileCatalogMenu from "./MobileCatalogMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
@@ -25,6 +26,7 @@ const Header = () => {
   const [showCurrency, setShowCurrency] = useState(false);
   const [showCity, setShowCity] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -270,6 +272,8 @@ const Header = () => {
           <MegaMenu onClose={() => setShowCategories(false)} />
         )}
       </header>
+
+      <MobileCatalogMenu open={mobileCatalogOpen} onClose={() => setMobileCatalogOpen(false)} />
 
       {/* Spacer */}
       <div className={`transition-all duration-300 ${isCompact ? "h-[60px]" : "h-[140px] lg:h-[160px]"}`} />
